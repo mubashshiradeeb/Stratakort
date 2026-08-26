@@ -16,8 +16,36 @@ export type ThemeId =
   | "daylight"
   | "nightdrive"
   | "pastelStudio"
-  | "blueprint";
-
+  | "blueprint"
+  | "cyberpunk"
+  | "nordicFrost"
+  | "terracotta"
+  | "vintageAtlas"
+  | "tokyoNeon"
+  | "sageForest"
+  | "obsidianGold"
+  | "sunsetMinimal"
+  | "monochromeDark"
+  | "desertOasis"
+  | "deepPlum"
+  | "sunkenTreasure"
+  | "creamyMatcha"
+  | "cherryBlossom"
+  | "volcanicAsh"
+  | "royalNavy"
+  | "warmOlive"
+  | "synthwave"
+  | "roseGold"
+  | "arcticIce"
+  | "brutalistConcrete"
+  | "duneSpice"
+  | "lavenderFog"
+  | "mustardRetro"
+  | "matrixGreen"
+  | "biscuitParchment"
+  | "electricViolet"
+  | "subtleClay"
+  | "abyssalTrench";
 export interface Palette {
   /** Map base / canvas background, visible wherever no feature is drawn. */
   background: string;
