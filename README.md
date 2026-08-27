@@ -1,4 +1,4 @@
-# Stratakort
+# Stratakort 
 
 A production-quality map poster generator, inspired by Terraink's product
 category. Search anywhere on Earth, restyle the cartography by hand — theme,
