@@ -406,7 +406,7 @@ Vercel| Deployment
     ├── store.ts                      # Centralized Zustand editor state management
     ├── types.ts                      # TypeScript interfaces & domain types
     ├── useExportPoster.ts            # Hook orchestrating high-res export generation
-    └── useLocationSearch.ts          # Shared debounced geocoding hook
+    └── useLocationSearch.ts          # Shared debounced geocoding hook```
 
 ---
 
