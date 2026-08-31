@@ -1,262 +1,691 @@
-# Stratakort 
+Stratakort
 
-A production-quality map poster generator, inspired by Terraink's product
-category. Search anywhere on Earth, restyle the cartography by hand — theme,
-typography, layers, routes — and export a print-ready PNG. Built with
-Next.js, MapLibre GL, and free/keyless map data.
+Production-quality map poster generator
 
-This is an original implementation inspired by the *product category*
-(interactive map poster editors), not a clone. No branding, logos, copy, or
-source code were copied from any reference site — including on generated
-posters, where the attribution line credits OpenStreetMap and this product
-(Stratakort) rather than any other company's name.
+Stratakort is an interactive map poster generator that lets you search anywhere on Earth, customize the cartography, compose a poster, and export it as a print-ready PNG.
+
+Built with Next.js, MapLibre GL JS, Zustand, and free/keyless geographic data sources.
+
+Live: "stratakort.vercel.app"
 
 ---
 
-## 1. What's actually implemented
+✨ What is Stratakort?
 
-Everything below is real and working, not a mock:
+Stratakort turns real-world geographic data into highly customizable map posters.
 
-- **Live map editor** — MapLibre GL JS renders real OpenStreetMap-derived
-  vector tiles (via [OpenFreeMap](https://openfreemap.org), free, no API
-  key — tried as positron → bright → liberty in order, so a single style
-  hiccup doesn't take the map down), plus two raster map types (Esri
-  satellite imagery, OpenTopoMap terrain). Buildings and street detail are
-  forced to render at any zoom the poster is framed at, rather than only
-  once you zoom in close the way a navigation-map style normally behaves.
-- **Eleven curated themes** — Midnight Blue, Warm Sand, Copper, Emerald, Soft
-  Slate, High Contrast Monochrome, Folio, Daylight, Nightdrive, Pastel
-  Studio, and Blueprint — each a deliberately composed color story (not
-  just a background swap), plus full custom color overrides for
-  background, land, water, major streets, minor streets, buildings, parks,
-  borders, and labels.
-- **Visual effects** — six map filters (Vintage, Cool, Warm, Faded, Noir)
-  applied identically in the live preview (CSS) and the export (canvas
-  `ctx.filter`), plus an adjustable procedural film-grain overlay.
-- **Typography** — four curated font pairs (Serif, Sans-Serif, Display,
-  Monospace), wide-tracked uppercase titles, an italic subtitle, a
-  multi-line custom quote/tagline, left/center/right alignment, adjustable
-  size/weight/letter-spacing, and an auto-or-custom text color.
-- **Routes** — add two or more searched stops and Stratakort draws a styled
-  connecting line (color, weight, solid/dashed) directly into the map style,
-  so it renders live and exports automatically with the rest of the map.
-- **Poster composition** — two overlay layouts (framed: matted crop with the
-  title in its own strip; floating: full-bleed map with the title floating
-  over its bottom edge on a gradient scrim), 16 aspect-ratio presets across
-  Print (2:3, 3:4, 4:5, 1:1, A4, A3, Letter), Social (LinkedIn Banner,
-  YouTube Banner/Thumbnail, Instagram Square, Instagram Story, Reddit
-  Banner), and Wallpaper (Desktop 4K, UltraWide, iPhone, Galaxy) — plus
-  orientation (where the format doesn't lock it), edge padding, frame
-  (none/line/double), and matting (auto/white/black/custom) — plus a
-  bottom-edge attribution colophon crediting OpenStreetMap, honoring their
-  attribution requirement.
-- **Real elevation shading** — an optional 3D terrain/hillshade layer using
-  free, keyless AWS Open Data terrain-RGB tiles, toggleable on any map type.
-- **Real location search** — a server-side proxy to OpenStreetMap Nominatim
-  (`/api/geocode`), debounced, with keyboard navigation and empty/error
-  states, reused across the floating map search, the Location panel, and
-  the Routes waypoint picker.
-- **Pixel-accurate live preview** — the on-screen crop/mat/frame/typography
-  overlay uses the exact same layout math (`computePosterLayout`) as the PNG
-  export, so what you see matches what downloads.
-- **Real PNG export** — composites the live map canvas with the poster
-  frame, marker, and typography onto an off-DOM canvas and downloads it.
-  "High-res" and "Print" tiers genuinely re-render the map at that target
-  resolution (not an upscaled screenshot) by briefly resizing the map's
-  render surface off-screen, capturing, then restoring it invisibly.
-- **Accordion control panel** — Location, Theme, Layout, Style, Layers,
-  Markers, Routes, and Settings, each collapsible, with a live "Current
-  Settings" summary and a persistent Download button always reachable
-  regardless of scroll position — on both desktop (sidebar) and mobile
-  (bottom sheet).
+Search for a location, choose a cartographic style, customize colors and typography, add routes and markers, adjust the composition, and export the finished poster.
+
+The editor is designed around a simple principle:
+
+«The map is the artwork. You control the visual language.»
+
+Everything in the editor is functional — the map, themes, styling controls, routes, terrain, poster composition, preview, and export pipeline are all implemented as real functionality rather than static UI.
 
 ---
 
-## 2. Project structure
+🚀 Features
 
-```
+🗺️ Live Map Editor
+
+- Interactive MapLibre GL JS map
+- Real OpenStreetMap-derived vector tiles
+- Full-planet coverage through OpenFreeMap
+- Satellite imagery through Esri World Imagery
+- Terrain basemap through OpenTopoMap
+- Buildings and detailed roads remain visible at poster-level zooms
+- Automatic fallback between OpenFreeMap styles
+- No API key required for the default configuration
+
+🎨 Cartographic Themes
+
+Stratakort includes curated visual themes designed as complete cartographic systems rather than simple background-color swaps.
+
+Current themes include:
+
+- Midnight Blue
+- Warm Sand
+- Copper
+- Emerald
+- Soft Slate
+- High Contrast Monochrome
+- Folio
+- Daylight
+- Nightdrive
+- Pastel Studio
+- Blueprint
+- Cyberpunk 
+- Nordic Frost
+- Terracotta 
+- Vintage Atlas
+- Tokyo Neon
+- Sage Forest
+- Obsidian Gold
+- Sunset Minimal
+- Dark Inverted Mono
+- Desert Oasis
+- Deep Plum
+- Sunken Treasure 
+- Creamy Matcha
+- Cherry Blossom 
+- Volcanic Ash
+- Royal Navy
+- Warm Olive 
+- Synthwave
+- Rose Gold
+- Arctic Ice
+- Brutalist Concrete
+- Dune Spice
+- Lavender Fog
+- Mustard Retro 
+- Matrix Green
+- Biscuit Parchment 
+- Electric Violet 
+- Subtle Clay
+- Abyssal Trench
+
+Every theme controls the visual relationship between:
+
+- Land
+- Water
+- Major roads
+- Minor roads
+- Buildings
+- Parks
+- Borders
+- Labels
+
+You can also override the individual colors manually.
+
+---
+
+🖌️ Custom Styling
+
+Fine-tune the map with independent controls for:
+
+- Background
+- Land
+- Water
+- Major streets
+- Minor streets
+- Buildings
+- Parks
+- Borders
+- Labels
+
+This makes it possible to create a completely custom cartographic style without modifying the underlying map data.
+
+---
+
+🌈 Visual Effects
+
+Six built-in map filters are available:
+
+- Vintage
+- Cool
+- Warm
+- Faded
+- Noir
+
+There is also a procedural film-grain effect with adjustable intensity.
+
+The same filter definitions are used by both the live preview and export pipeline to keep the two visually consistent.
+
+---
+
+✍️ Typography
+
+Create poster titles and supporting text with:
+
+- Serif
+- Sans-serif
+- Display
+- Monospace
+
+Typography controls include:
+
+- Title
+- Subtitle
+- Multi-line quote/tagline
+- Left / center / right alignment
+- Font size
+- Font weight
+- Letter spacing
+- Automatic or custom text color
+
+Titles use wide-tracked uppercase styling to reinforce the print/cartography aesthetic.
+
+---
+
+📍 Location Search
+
+Search anywhere on Earth using OpenStreetMap Nominatim.
+
+The search system includes:
+
+- Debounced requests
+- Keyboard navigation
+- Empty states
+- Error handling
+- Server-side proxying
+- Reusable search logic
+
+The same search infrastructure powers:
+
+- Floating map search
+- Location panel
+- Route waypoint selection
+
+---
+
+🧭 Routes
+
+Add two or more locations and Stratakort will draw a connecting route directly into the map style.
+
+Route controls include:
+
+- Multiple waypoints
+- Route color
+- Route weight
+- Solid or dashed styling
+
+Routes are rendered as part of the MapLibre style, meaning they appear in both the live editor and exported poster.
+
+«Routes currently connect stops using straight line segments rather than road-following directions.»
+
+---
+
+⛰️ Terrain & Elevation
+
+Stratakort supports optional real elevation shading using AWS Open Data terrain tiles.
+
+The terrain layer can be enabled independently of the selected basemap.
+
+This allows posters to incorporate actual geographic relief rather than simulated gradients.
+
+---
+
+🖼️ Poster Composition
+
+Choose between two poster layouts:
+
+Framed
+
+- Matted map crop
+- Dedicated title area
+- Optional frame
+- Configurable matting
+
+Floating
+
+- Full-bleed map
+- Typography floating over the lower edge
+- Gradient scrim behind text
+
+Additional controls include:
+
+- Edge padding
+- Orientation
+- Frame style
+- Matting
+- Custom mat color
+
+Frame options:
+
+- None
+- Line
+- Double
+
+Matting options:
+
+- Auto
+- White
+- Black
+- Custom
+
+---
+
+📐 Aspect Ratios
+
+Stratakort includes presets across three categories.
+
+Print
+
+- 2:3
+- 3:4
+- 4:5
+- 1:1
+- A4
+- A3
+- Letter
+
+Social
+
+- LinkedIn Banner
+- YouTube Banner
+- YouTube Thumbnail
+- Instagram Square
+- Instagram Story
+- Reddit Banner
+
+Wallpaper
+
+- Desktop 4K
+- UltraWide
+- iPhone
+- Galaxy
+
+Orientation can be changed where the selected format does not impose a fixed orientation.
+
+---
+
+🖨️ High-Resolution PNG Export
+
+The export pipeline is designed to render the poster rather than simply screenshot the browser viewport.
+
+Export includes:
+
+- Map rendering
+- Crop
+- Matting
+- Frame
+- Marker
+- Typography
+- Attribution
+- Visual filters
+- Film grain
+
+For supported quality tiers, the map is temporarily rendered at the target resolution before being composited onto an off-DOM canvas.
+
+The map is then restored to its original state without disrupting the editor.
+
+---
+
+👀 Pixel-Accurate Preview
+
+The editor preview and PNG export share the same poster layout calculations.
+
+The "computePosterLayout" system determines:
+
+- Crop
+- Matting
+- Frame
+- Text positioning
+- Attribution placement
+
+This minimizes discrepancies between what appears in the editor and what is exported.
+
+---
+
+🏗️ Tech Stack
+
+Technology| Purpose
+Next.js| Application framework
+React| UI
+TypeScript| Type safety
+MapLibre GL JS| Interactive maps
+Zustand| Editor state
+Tailwind CSS| Styling
+HTML Canvas| Poster composition & export
+OpenFreeMap| Vector map tiles
+OpenStreetMap| Geographic data
+Nominatim| Geocoding/search
+Esri World Imagery| Satellite imagery
+OpenTopoMap| Terrain basemap
+AWS Open Data| Elevation/terrain tiles
+Vercel| Deployment
+
+---
+
+📁 Project Structure
+
 app/
-  page.tsx                    Landing page
-  create/page.tsx              Editor route
-  api/geocode/route.ts         Server-side Nominatim proxy
-  layout.tsx, globals.css
+├── page.tsx                    # Landing page
+├── create/
+│   └── page.tsx                # Editor route
+├── api/
+│   └── geocode/
+│       └── route.ts             # Server-side Nominatim proxy
+├── layout.tsx
+└── globals.css
 
 components/
-  landing/                     Navbar, Hero, Features, Gallery, FAQ, Footer,
-                                PosterMock (real live-rendered sample poster
-                                cards, see LiveMapThumbnail)
-  editor/
-    MapEditor.tsx               Top-level editor composition
-    EditorCanvas.tsx            Owns the stable "viewport" wrapper
-    MapCanvas.tsx                MapLibre lifecycle: create, style updates,
-                                  live filter, error/loading states
-    PosterOverlay.tsx            Live crop/mat/frame/typography/attribution
-                                  preview
-    LocationSearch.tsx           Floating debounced search with keyboard nav
-    LocationPanel.tsx            Location accordion: summary + inline search
-    StyleSelector.tsx            Map type + curated theme picker
-    ColorControls.tsx            8-color palette editor
-    EffectsControls.tsx          Map filter presets + grain intensity
-    LayerControls.tsx            Layer visibility + terrain toggle
-    TypographyControls.tsx       Font pair, title/subtitle/quote, alignment,
-                                  text color, size, spacing
-    PosterSettingsControls.tsx   Overlay style (framed/floating), aspect
-                                  ratio presets (Print/Social/Wallpaper),
-                                  orientation, padding, matting, frame
-                                  (the "Layout" accordion)
-    MarkerControls.tsx           Marker visibility, style, color
-    RouteControls.tsx            Waypoint search/list + route styling
-    SettingsControls.tsx         Export resolution, attribution toggle, reset
-    CurrentSettingsSummary.tsx   Live summary card above the download button
-    DownloadBar.tsx              Persistent export trigger
-    ControlPanel.tsx             Accordion assembly (desktop sidebar /
-                                  mobile bottom sheet)
-    EditorTopBar.tsx
-  ui/                           Slider, Toggle, ColorField, SegmentedControl,
-                                Accordion, ControlSection — shared primitives
+├── landing/
+│   ├── Navbar.tsx
+│   ├── Hero.tsx
+│   ├── Features.tsx
+│   ├── Gallery.tsx
+│   ├── FAQ.tsx
+│   ├── Footer.tsx
+│   └── PosterMock.tsx
+│
+├── editor/
+│   ├── MapEditor.tsx
+│   ├── EditorCanvas.tsx
+│   ├── MapCanvas.tsx
+│   ├── PosterOverlay.tsx
+│   ├── LocationSearch.tsx
+│   ├── LocationPanel.tsx
+│   ├── StyleSelector.tsx
+│   ├── ColorControls.tsx
+│   ├── EffectsControls.tsx
+│   ├── LayerControls.tsx
+│   ├── TypographyControls.tsx
+│   ├── PosterSettingsControls.tsx
+│   ├── MarkerControls.tsx
+│   ├── RouteControls.tsx
+│   ├── SettingsControls.tsx
+│   ├── CurrentSettingsSummary.tsx
+│   ├── DownloadBar.tsx
+│   ├── ControlPanel.tsx
+│   └── EditorTopBar.tsx
+│
+└── ui/
+    ├── Slider.tsx
+    ├── Toggle.tsx
+    ├── ColorField.tsx
+    ├── SegmentedControl.tsx
+    ├── Accordion.tsx
+    └── ControlSection.tsx
 
 lib/
-  store.ts                     Centralized Zustand editor state
-  types.ts                     Shared TypeScript types
-  mapStyles.ts                 Style construction: schema-based recoloring
-                                (background/land/water/parks/major+minor
-                                roads/buildings/borders/labels), the
-                                minzoom fix that keeps buildings and detail
-                                roads visible at poster zoom, terrain, and
-                                route layers, all baked into one style
-                                JSON per update
-  aspectRatioPresets.ts        Print/Social/Wallpaper layout presets (id,
-                                ratio or literal fixedPx, orientation lock)
-  export.ts                    Poster layout math (framed + floating) +
-                                canvas compositor
-  mapFilters.ts                 Shared CSS/canvas filter definitions
-  grain.ts                      Procedural film-grain texture (preview canvas
-                                data-URL + export canvas pattern)
-  fontPairs.ts                  Curated font-pair definitions
-  geocode.ts, useLocationSearch.ts   Search fetch + shared debounce hook
-  useExportPoster.ts             Shared export hook (used by DownloadBar)
-  mapContext.tsx                 React context sharing the map instance
-  palettes.ts                    Theme presets, raster-mode palettes
-  sampleData.ts                  Real city/theme pairings for landing-page
-                                cards (rendered live, see LiveMapThumbnail)
-```
+├── store.ts
+├── types.ts
+├── mapStyles.ts
+├── palettes.ts
+├── aspectRatioPresets.ts
+├── export.ts
+├── mapFilters.ts
+├── grain.ts
+├── fontPairs.ts
+├── geocode.ts
+├── useLocationSearch.ts
+├── useExportPoster.ts
+├── mapContext.tsx
+└── sampleData.ts
 
 ---
 
-## 3. Setup
+🔧 Getting Started
 
-Requires Node.js 18.18+ (Next.js 14 requirement).
+Requirements
 
-```bash
+- Node.js 18.18+
+- npm
+
+Installation
+
+git clone <your-repository-url>
+cd stratakort
+
 npm install
+
+Development
+
 npm run dev
-```
 
-Open [http://localhost:3000](http://localhost:3000). **No environment
-variables or API keys are required.** See `.env.example` for optional
-upgrades (e.g. swapping in a MapTiler key for higher tile-traffic limits).
+Open:
 
-### Other commands
+http://localhost:3000
 
-```bash
-npm run build     # production build
-npm run start     # serve the production build
-npm run lint      # Next.js lint
-```
+No environment variables or API keys are required for the default configuration.
 
 ---
 
-## 4. Deployment (Vercel)
+📦 Available Scripts
 
-1. Push this repo to GitHub/GitLab/Bitbucket.
-2. Import it in [Vercel](https://vercel.com/new) — it auto-detects Next.js.
-   No environment variables are required for the default build.
-3. Deploy.
+npm run dev
 
-The `/api/geocode` route runs as a Vercel serverless function automatically;
-no extra configuration needed.
+Starts the development server.
 
----
+npm run build
 
-## 5. Data sources (all free, all keyless by default)
+Creates a production build.
 
-| Purpose | Provider | Notes |
-|---|---|---|
-| Vector map (Cartography themes) | [OpenFreeMap](https://openfreemap.org) | Full planet, OpenMapTiles schema, no key |
-| Geocoding / search | [OSM Nominatim](https://nominatim.org) | Public endpoint, proxied server-side with a proper User-Agent per their usage policy |
-| Satellite imagery | Esri World Imagery | Public tile endpoint |
-| Terrain base map | [OpenTopoMap](https://opentopomap.org) | CC-BY-SA |
-| Elevation / hillshade | AWS Open Data Terrain Tiles (Terrarium encoding) | Public S3 bucket, no key |
+npm run start
 
-All attributions render in the map's bottom-right control, and the poster
-itself carries a bottom-edge colophon crediting OpenStreetMap, as their
-license requires.
+Runs the production build.
+
+npm run lint
+
+Runs the project's linting checks.
 
 ---
 
-## 6. Known limitations
+☁️ Deployment
 
-- **Style-update rendering in unusual environments.** Theme/color changes
-  are applied via MapLibre's standard `setStyle()` mechanism (the same
-  primary code path every production MapLibre app uses for style
-  switching) and were verified correct at the state level — confirmed via
-  `getPaintProperty` readback after every change. In one constrained,
-  GPU-less, headless testing sandbox (Chromium forced onto its deprecated
-  SwiftShader *software* WebGL fallback), the compositor did not always
-  visibly repaint after a pure color-only style update, even though the
-  underlying style state was correct and structural changes (e.g.
-  switching Cartography → Satellite) repainted correctly every time. This
-  pattern is consistent with a software-rendering-fallback quirk rather
-  than an application bug, but **please verify theme switching visually
-  right after your first deploy** — if a theme click doesn't recolor the
-  map in a real browser, that's the first place to look
-  (`components/editor/MapCanvas.tsx`, the style-update effect).
-- **Nominatim rate limits at scale.** Fine for moderate traffic; for a real
-  launch, self-host Nominatim or switch to a commercial geocoder (see the
-  comment in `app/api/geocode/route.ts`).
-- **OpenFreeMap has no official uptime SLA.** Free and community-run. We
-  try positron → bright → liberty in order (all share the same OpenMapTiles
-  schema) and fall back to a minimal inline style pointed at the same tile
-  source as a last resort, so a single outage doesn't show a broken map —
-  but there's still no *guaranteed* fallback if the underlying tile source
-  itself is down, only if one style's pre-built JSON is.
-- **Vector-tile color/category mapping is schema-based, not hardcoded to
-  one style's layer ids.** Layers are sorted into background / land / water
-  / parks / buildings / major streets / minor streets / borders / labels by
-  their OpenMapTiles `source-layer` (and, for roads, by parsing the
-  `class`/`subclass` values out of each layer's filter expression) rather
-  than by matching specific layer ids — verified directly against the real
-  positron and bright style JSON, so it survives OpenFreeMap re-splitting or
-  renaming layers within a style, though not a change to the underlying
-  OpenMapTiles schema itself. Buildings and detail-road layers also have
-  their `minzoom` cleared to 0 wherever the base style would otherwise hide
-  them until a closer navigation-map zoom — this is what fixes a poster
-  looking like a flat, feature-less box at typical city-overview framings.
-- **Routes draw straight lines between stops**, not road-following
-  directions — adding a routing API (e.g. OSRM) is a natural extension but
-  was intentionally left out to avoid a third external dependency with
-  usage-policy caveats similar to Nominatim's.
-- **Export resolution is capped by practical browser limits** for the
-  ratio-only presets (2:3, 3:4, 4:5, 1:1), which scale with the chosen
-  quality tier. Named formats (A4/A3/Letter, the social presets, the
-  wallpaper presets) instead export at their exact literal pixel target
-  regardless of quality tier, since the point of picking e.g. "A4" is that
-  specific size. True poster-press resolution (300dpi at 24in+) for the
-  ratio-only presets would still need a server-side rendering step, out of
-  scope for a client-only app.
-- **No accounts, saving, or sharing.** Everything lives in browser memory
-  for the session.
-- **Font stack is system fonts**, not bundled webfonts — keeps the app
-  fully functional without a build-time network dependency to a font CDN.
-  Swapping in `next/font/google` is a one-file change if you want custom
-  webfonts.
+Stratakort is designed to deploy directly to Vercel.
+
+Vercel
+
+1. Push the repository to GitHub, GitLab, or Bitbucket.
+2. Import the repository into Vercel.
+3. Vercel automatically detects the Next.js application.
+4. Deploy.
+
+The "/api/geocode" endpoint runs automatically as a Vercel serverless function.
+
+The default application does not require environment variables or API keys.
 
 ---
 
-## 7. Design notes
+🌍 Data Sources & Attribution
 
-The visual language (paper/ink/brass palette, serif display type, mono
-coordinates) is original and deliberately steered away from generic
-SaaS/AI-tool defaults, aiming instead for a cartography/printmaking feel
-appropriate to a poster product. See `tailwind.config.ts` for the full
-design token set.
+Stratakort uses openly available geographic and map resources.
+
+Purpose| Provider
+Vector cartography| OpenFreeMap
+Geographic data| OpenStreetMap
+Geocoding| OpenStreetMap Nominatim
+Satellite imagery| Esri World Imagery
+Terrain basemap| OpenTopoMap
+Elevation data| AWS Open Data
+
+Map attribution is displayed through the map interface, and exported posters include an attribution colophon crediting OpenStreetMap and Stratakort.
+
+Please review the current terms and usage policies of each upstream provider before operating the application at significant scale.
+
+---
+
+⚙️ Architecture Highlights
+
+Schema-Based Map Styling
+
+Map styling is not tied to a single hardcoded style.
+
+"mapStyles.ts" analyzes OpenMapTiles source layers and categorizes them into functional groups such as:
+
+background
+land
+water
+parks
+buildings
+major streets
+minor streets
+borders
+labels
+
+This allows the palette system to recolor the map while remaining resilient to layer IDs changing within compatible OpenMapTiles styles.
+
+Road classes are additionally interpreted from their style filter expressions.
+
+---
+
+Poster Rendering Pipeline
+
+The application separates the map renderer from the poster compositor.
+
+Conceptually:
+
+MapLibre
+   │
+   ▼
+Map Render Surface
+   │
+   ▼
+Poster Layout
+   │
+   ├── Crop
+   ├── Matting
+   ├── Frame
+   ├── Marker
+   ├── Typography
+   ├── Filters
+   ├── Grain
+   └── Attribution
+   │
+   ▼
+Canvas
+   │
+   ▼
+PNG
+
+This architecture allows the interactive map and final poster to share the same visual configuration while keeping export independent from the DOM layout.
+
+---
+
+🧪 Known Limitations
+
+Map Style Repainting
+
+Theme changes use MapLibre's standard "setStyle()" mechanism.
+
+The application's state and MapLibre style state update correctly, but certain constrained GPU-less/headless environments using software WebGL can fail to visibly repaint after color-only style changes.
+
+Structural style changes and basemap changes repaint correctly.
+
+If theme switching behaves unexpectedly after deployment, "components/editor/MapCanvas.tsx" is the first place to investigate.
+
+---
+
+Nominatim Scaling
+
+The public Nominatim endpoint is suitable for moderate usage but is not intended to serve unrestricted high-volume production traffic.
+
+For a larger deployment, consider:
+
+- Self-hosting Nominatim
+- Using a dedicated geocoding provider
+- Adding stronger caching/rate limiting
+
+---
+
+OpenFreeMap Availability
+
+OpenFreeMap is free and does not provide the same SLA as a commercial tile provider.
+
+Stratakort attempts multiple compatible OpenFreeMap styles before falling back to a minimal inline style.
+
+However, all of those approaches ultimately depend on the underlying tile infrastructure being available.
+
+---
+
+Routing
+
+Routes currently use straight line segments between searched stops.
+
+They are not road-following navigation routes.
+
+A future routing implementation could integrate a service such as OSRM while keeping the existing route styling system.
+
+---
+
+Export Resolution
+
+Named formats such as A4, A3, Letter, social formats, and wallpaper formats use their defined pixel dimensions.
+
+Ratio-only presets scale according to the selected quality tier and remain subject to browser canvas limits.
+
+Very large print-press output, such as a 24-inch poster at true 300 DPI, would be better handled through server-side rendering.
+
+---
+
+Fonts
+
+The default font system uses local/system fonts rather than a remotely hosted webfont provider.
+
+This keeps the application functional without introducing a build-time dependency on a font CDN.
+
+Custom webfonts can be added later using Next.js font tooling.
+
+---
+
+Persistence
+
+Stratakort currently has:
+
+- No accounts
+- No database
+- No cloud project storage
+- No saved designs
+- No collaboration
+- No sharing system
+
+Editor state exists in browser memory for the current session.
+
+---
+
+🎯 Design Philosophy
+
+Stratakort intentionally avoids the visual language of generic SaaS dashboards and AI products.
+
+The interface uses a visual vocabulary inspired by:
+
+- Cartography
+- Printmaking
+- Editorial design
+- Paper
+- Ink
+- Brass
+- Serif typography
+- Monospaced geographic metadata
+
+The goal is for the map itself to feel like a designed artifact, rather than a conventional navigation map placed inside a poster template.
+
+---
+
+🔮 Potential Future Development
+
+Possible extensions include:
+
+- Road-following routes
+- Saved projects
+- Shareable poster URLs
+- User accounts
+- Custom webfonts
+- More map themes
+- Custom map layer imports
+- GPX/KML route imports
+- Additional geographic overlays
+- Server-side high-resolution rendering
+- Commercial tile/geocoding providers
+- Batch poster generation
+- Poster history/versioning
+- Collaborative editing
+
+---
+
+📜 License & Originality
+
+Stratakort is an original implementation inspired by the broader category of interactive map poster editors.
+
+It does not copy the branding, logos, source code, or written copy of another product.
+
+The implementation, interface, styling system, editor architecture, poster composition system, and export pipeline were developed specifically for Stratakort.
+
+Generated posters use Stratakort branding and appropriate geographic-data attribution.
+
+---
+
+👨‍💻 Project
+
+Stratakort
+Interactive map poster generator
+
+Live application: "stratakort.vercel.app"
+
+Built with Next.js, MapLibre GL JS, TypeScript, Zustand, Canvas, and open geographic data.
+
+---
+
+Made for maps. Designed like posters.
