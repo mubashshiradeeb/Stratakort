@@ -1,4 +1,4 @@
-Stratakort
+# Stratakort
 
 Production-quality map poster generator
 
