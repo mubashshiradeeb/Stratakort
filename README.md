@@ -339,72 +339,74 @@ Vercel| Deployment
 
 ---
 
-📁 Project Structure
+## 📁 Project Structure
 
-app/
-├── page.tsx                    # Landing page
-├── create/
-│   └── page.tsx                # Editor route
-├── api/
-│   └── geocode/
-│       └── route.ts             # Server-side Nominatim proxy
-├── layout.tsx
-└── globals.css
-
-components/
-├── landing/
-│   ├── Navbar.tsx
-│   ├── Hero.tsx
-│   ├── Features.tsx
-│   ├── Gallery.tsx
-│   ├── FAQ.tsx
-│   ├── Footer.tsx
-│   └── PosterMock.tsx
+```text
+.
+├── app/
+│   ├── api/
+│   │   └── geocode/
+│   │       └── route.ts              # Server-side Nominatim geocoding proxy
+│   ├── create/
+│   │   └── page.tsx                  # Interactive map poster editor route
+│   ├── globals.css                   # Tailwind imports & global style declarations
+│   ├── layout.tsx                    # Root application layout wrapper
+│   └── page.tsx                      # Product landing page
 │
-├── editor/
-│   ├── MapEditor.tsx
-│   ├── EditorCanvas.tsx
-│   ├── MapCanvas.tsx
-│   ├── PosterOverlay.tsx
-│   ├── LocationSearch.tsx
-│   ├── LocationPanel.tsx
-│   ├── StyleSelector.tsx
-│   ├── ColorControls.tsx
-│   ├── EffectsControls.tsx
-│   ├── LayerControls.tsx
-│   ├── TypographyControls.tsx
-│   ├── PosterSettingsControls.tsx
-│   ├── MarkerControls.tsx
-│   ├── RouteControls.tsx
-│   ├── SettingsControls.tsx
-│   ├── CurrentSettingsSummary.tsx
-│   ├── DownloadBar.tsx
-│   ├── ControlPanel.tsx
-│   └── EditorTopBar.tsx
+├── components/
+│   ├── editor/                       # Map customization & layout controls
+│   │   ├── ColorControls.tsx         # 8-color palette editor
+│   │   ├── ControlPanel.tsx          # Desktop sidebar & mobile sheet accordion assembly
+│   │   ├── CurrentSettingsSummary.tsx# Live configuration summary card above export
+│   │   ├── DownloadBar.tsx           # Persistent export action bar & trigger
+│   │   ├── EditorCanvas.tsx          # Viewport wrapper & gesture boundary
+│   │   ├── EditorTopBar.tsx          # Header bar for the editor interface
+│   │   ├── EffectsControls.tsx       # Map filter presets & grain intensity adjustment
+│   │   ├── LayerControls.tsx         # Feature layer visibility & 3D terrain toggles
+│   │   ├── LocationPanel.tsx         # Location accordion with inline search integration
+│   │   ├── LocationSearch.tsx        # Floating debounced location search with keyboard nav
+│   │   ├── MapCanvas.tsx             # MapLibre lifecycle, style compilation, & live filters
+│   │   ├── MapEditor.tsx             # Top-level composition shell for the editor
+│   │   ├── MarkerControls.tsx        # Pin visibility, custom marker styling, & color
+│   │   ├── PosterOverlay.tsx         # Real-time preview overlay (frame, mat, typography)
+│   │   ├── PosterSettingsControls.tsx# Frame layout, aspect ratio, padding, & matting
+│   │   ├── RouteControls.tsx         # Waypoint search list & route line path styling
+│   │   ├── SettingsControls.tsx      # Output resolution, attributions, & state reset
+│   │   ├── StyleSelector.tsx         # Map provider type & curated base theme picker
+│   │   └── TypographyControls.tsx    # Font pairs, copy, alignment, sizing, & spacing
+│   │
+│   ├── landing/                      # Landing page sections & preview components
+│   │   ├── FAQ.tsx                   # Frequently asked questions accordion
+│   │   ├── Features.tsx              # Core features highlight grid
+│   │   ├── Footer.tsx                # Site footer
+│   │   ├── Gallery.tsx               # Curated poster showcase
+│   │   ├── Hero.tsx                  # Hero banner with primary editor CTA
+│   │   ├── Navbar.tsx                # Main navigation header
+│   │   └── PosterMock.tsx            # Live-rendered sample poster card container
+│   │
+│   └── ui/                           # Reusable atomic UI components
+│       ├── Accordion.tsx
+│       ├── ColorField.tsx
+│       ├── ControlSection.tsx
+│       ├── SegmentedControl.tsx
+│       ├── Slider.tsx
+│       └── Toggle.tsx
 │
-└── ui/
-    ├── Slider.tsx
-    ├── Toggle.tsx
-    ├── ColorField.tsx
-    ├── SegmentedControl.tsx
-    ├── Accordion.tsx
-    └── ControlSection.tsx
-
-lib/
-├── store.ts
-├── types.ts
-├── mapStyles.ts
-├── palettes.ts
-├── aspectRatioPresets.ts
-├── export.ts
-├── mapFilters.ts
-├── grain.ts
-├── fontPairs.ts
-├── geocode.ts
-├── useLocationSearch.ts
-├── useExportPoster.ts
-├── mapContext.tsx
-└── sampleData.ts
+└── lib/                              # Application state, rendering logic, & utilities
+    ├── aspectRatioPresets.ts         # Aspect ratio configurations (Print/Social/Wallpaper)
+    ├── export.ts                     # Canvas compositor & high-resolution poster exporter
+    ├── fontPairs.ts                  # Typography pairings & font loaders
+    ├── geocode.ts                    # Geocoding fetch utilities
+    ├── grain.ts                      # Procedural film-grain generator (data-URL & pattern)
+    ├── mapContext.tsx                # React Context holding the shared MapLibre instance
+    ├── mapFilters.ts                 # Shared CSS and Canvas filter definitions
+    ├── mapStyles.ts                  # Schema-based recoloring & minzoom fix compiler
+    ├── palettes.ts                   # Curated theme presets & raster palettes
+    ├── sampleData.ts                 # Sample city/theme pairings for landing card previews
+    ├── store.ts                      # Centralized Zustand editor state management
+    ├── types.ts                      # TypeScript interfaces & domain types
+    ├── useExportPoster.ts            # Hook orchestrating high-res export generation
+    └── useLocationSearch.ts          # Shared debounced geocoding hook
 
 ---
 
