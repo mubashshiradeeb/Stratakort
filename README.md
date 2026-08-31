@@ -37,6 +37,8 @@ Everything in the editor is functional — the map, themes, styling controls, ro
 - Automatic fallback between OpenFreeMap styles
 - No API key required for the default configuration
 
+---
+
 🎨 Cartographic Themes
 
 Stratakort includes curated visual themes designed as complete cartographic systems rather than simple background-color swaps.
