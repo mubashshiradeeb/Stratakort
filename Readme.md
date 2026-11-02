@@ -171,7 +171,7 @@ Midnight Blue · Warm Sand · Copper · Emerald · Soft Slate · High Contrast M
 **Requirements:** Node.js 18.18+ and npm
 
 ```bash
-git clone <your-repository-url>
+git clone https://github.com/mubashshiradeeb/Stratakort
 cd stratakort
 npm install
 npm run dev
